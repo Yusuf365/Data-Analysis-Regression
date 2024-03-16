@@ -27,9 +27,6 @@ raw_data <- read_delim("data/raw_data/raw_data.csv", delim = ";")
 head(raw_data)
 
 
-clean_data <-  na.omit(raw_data)
-
-
 clean_data <- raw_data |>
   rename(
     AreaName = areaname,
@@ -43,6 +40,9 @@ head(clean_data)
 names(clean_data)
 head(clean_data$Date)
 
+clean_data <- na.omit(clean_data)
+
+
 # Adding separate column for year, month, date
 
 clean_data <- clean_data |>
@@ -52,6 +52,6 @@ clean_data <- clean_data |>
     day = day(Date)     # Extract the day from the date column
   )
 
-
+view(clean_data)
 #### Save data ####
 write_csv(clean_data, "data/analysis_data/analysis_data.csv")
