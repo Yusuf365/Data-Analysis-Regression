@@ -27,8 +27,7 @@ raw_data <- read_delim("data/raw_data/raw_data.csv", delim = ";")
 head(raw_data)
 
 
-clean_data <- clean_data |>
-  drop_na()
+clean_data <- drop_na(raw_data)
 
 
 clean_data <- raw_data |>
