@@ -37,6 +37,7 @@ data <- read_csv("data/analysis_data/analysis_data.csv")
 ```
 
 
+
 # Introduction
 
 COVID-19 pandemic is brought about by SARS-CoV-2 virus and first appeared in the end of 2019, growing to be the world 's deadly virus in a very short time. Existing worldwide healthcare systems, countries’ economies, and everyday life have experienced frequent disruptions by this outbreak on the single hand, it drove the alarming need for better infectious disease surveillance and management strategies. Of the lot of lessons that have been attained, the know-how of the temporal dimension in the tranmission of diseases is currently the most important aspect of the successful public health reaction.
@@ -75,6 +76,7 @@ Aggregation: Different data types were sometimes added to monthly or yearly scal
 
 ## Descriptive Analysis
 
+
 ```{r}
 #| label: fig-distribution-covid19
 #| fig-cap: Distribution of New COVID-19 Cases Rate per 100k in England
@@ -88,6 +90,7 @@ ggplot(data, aes(x = NewCasesRatePer100k)) +
   labs(title = "Distribution of New Cases Rate per 100k",
        x = "New Cases Rate per 100k", y = "Frequency")
 ```
+
 
 @fig-distribution-covid19
 
@@ -144,5 +147,6 @@ The negative binomial model is more suitable of our data than other count models
 
 
 # References
+
 
 
