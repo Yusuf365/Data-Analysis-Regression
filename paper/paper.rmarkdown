@@ -12,6 +12,9 @@ bibliography: references.bib
 ---
 
 ```{r}
+#| include: false
+#| warning: false
+#| message: false
 ### Load Data and Packages
 
 install.packages("readr")
@@ -31,9 +34,24 @@ library(modelsummary)
 library(ggplot2)
 library(broom)
 library(knitr)
+library(tidyverse)
+library(AER)
+library(opendatatoronto)
+library(dplyr)
+library(readr)
+library(janitor)
+library(ggplot2)
+library(readr)
+```
 
-data <- read_csv("data/analysis_data/analysis_data.csv")
-
+```{r}
+#| include: false
+#| warning: false
+#| message: false
+data <-
+  read_csv(
+    here::here("data/analysis_data/analysis_data.csv")
+  )
 ```
 
 
@@ -92,20 +110,9 @@ ggplot(data, aes(x = NewCasesRatePer100k)) +
 ```
 
 
-@fig-distribution-covid19
+The histogram plotted in @fig-distribution-covid19 is the distribution of New Cases Rate per 100k in the England region, from the year 2020 to 2023. The x axis symbolizes the new case rate per 100,000 population and y-axis signifies the frequency of these rates within the dataset. Graphically shown, the data is right-skewed implying most data is at the lower end of the spectrum. Many of the peaks are high and separated by long tails to the right showing high rates of transmission. A significant component of the pandemic waves, including the sporadic outbreaks and possible superspreader events, which underlie the highly episodic nature of the infectious disease, can be seen here. The shape of the distribution is emblematic of the need for a statistical model that incorporates such overdispersion — where the variation is larger than the mean — because such modeling has innumerable implications on the kind of model to be chosen.
 
-
-The histogram presented in @fig-distribution-covid19 illustrates the distribution of the New Cases Rate per 100k in England from 2020 to 2023. The x-axis represents the rate of new cases per 100,000 population, while the y-axis indicates the frequency of these rates occurring within the dataset. As depicted, the distribution is right-skewed, suggesting that while most of the data points are concentrated toward the lower end of the spectrum, there are periods characterized by high transmission rates, evident from the long tail extending to the right.
-
-This skewness is indicative of the episodic nature of infectious disease spread, reflecting both the sporadic outbreaks that punctuate periods of relative stability and the potential impact of superspreader events. The distribution's shape underscores the need for a statistical model capable of accommodating such overdispersion—where the variance of the case rates is greater than the mean—which has significant implications for the chosen modeling approach and the interpretation of the results.
-
-This visual representation of the data was essential in guiding the choice of a negative binomial regression model for our analysis, providing a clear rationale for its selection over other models less equipped to handle such variability in count data.
-
-A preliminary descriptive analysis provided an overview of the dataset's characteristics:
-
-The total number of records in the dataset and the range of dates covered indicated the comprehensive nature of the data, capturing the entirety of the pandemic's progression in England up to 2023.
-Summary statistics for NewCasesBySpecimenDate, NewCasesRatePer100k, and NewCasesRollingSum highlighted the variability in COVID-19 transmission rates over time, reflecting waves of infection and periods of relative calm.
-The distribution of NewCasesRatePer100k revealed a right-skewed pattern, indicative of periods with exceptionally high transmission rates contrasted against more typical levels of new cases.
+The total number of records in the dataset and the range of dates covered indicated the comprehensive nature of the data, capturing the entirety of the pandemic's progression in England up to 2023. Summary statistics for NewCasesBySpecimenDate, NewCasesRatePer100k, and NewCasesRollingSum highlighted the variability in COVID-19 transmission rates over time, reflecting waves of infection and periods of relative calm. As the distribution of NewCasesRatePer100k revealed a right-skewed pattern, indicative of periods with exceptionally high transmission rates contrasted against more typical levels of new cases.
 Temporal trends were visualized through time series plots, illustrating the impact of national lockdowns, vaccination rollouts, and other public health measures on COVID-19 transmission rates.
 
 
@@ -143,6 +150,32 @@ The negative binomial regression model is justified based on empirical evidence.
 The negative binomial model is more suitable of our data than other count models, with some assumptions and restrictions however. These factors encompass the assumption of mutual independence of observations and omitted heterogeneity affecting infections rates. Further on, the model lacks an explanation of the spatial variability or non-time covariates which could inspire future studies
 
 # Results
+
+
+```{r}
+#| label: tab-distribution-covid19
+#| fig-cap: Distribution of New COVID-19 Cases Rate per 100k in England
+#| echo: false
+#| warning: false
+#| message: false
+
+nb_model <- glm.nb(NewCasesRatePer100k ~ month + year, data = data)
+
+
+
+# First, create a data frame from the model summary (similar to what we would have done here)
+model_summary_df <- data.frame(
+  Term = c("(Intercept)", "month", "year"),
+  Estimate = c(1.620e+03, -1.059e-01, -7.986e-01),
+  `Std. Error` = c(4.297e+01, 6.973e-03, 2.125e-02),
+  `z value` = c(37.71, -15.19, -37.58),
+  `Pr(>|z|)` = c("<2e-16", "<2e-16", "<2e-16")
+)
+
+# Then use kable to create the table
+library(knitr)
+kable(model_summary_df, caption = "Summary of Negative Binomial Regression Model")
+```
 
 
 
