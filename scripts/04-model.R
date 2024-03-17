@@ -114,6 +114,24 @@ ggplot(data, aes(x = predicted, y = NewCasesRatePer100k)) +
 
 stargazer(nb_model, type = "text", header = FALSE, title = "Model Summary")
 
+library(knitr)
+
+# Assuming you have a summary of the model stored in nb_model_summary
+nb_model_summary <- summary(nb_model)
+
+# Create a dataframe to store the coefficients
+model_coefficients <- data.frame(
+  Term = rownames(nb_model_summary$coefficients),
+  Estimate = nb_model_summary$coefficients[, "Estimate"],
+  StdError = nb_model_summary$coefficients[, "Std. Error"],
+  zValue = nb_model_summary$coefficients[, "z value"],
+  pValue = nb_model_summary$coefficients[, "Pr(>|z|)"]
+)
+
+# Create a kable table
+kable(model_coefficients, format = "markdown", col.names = c("Term", "Estimate", "Standard Error", "Z Value", "P Value"), caption = "Summary of Negative Binomial Regression Model")
+
+
 # Basic information from the model
 # Model Fit Statistics
 model_info <- data.frame(
@@ -130,13 +148,7 @@ model_summary <- glance(nb_model)
 kable(model_summary, caption = "Model Fit Statistics")
 
 
-# Example of fitting a Bayesian negative binomial model
-# Note: You might need to adjust this example to fit your specific scenario.
-bayesian_nb_model <- stan_glm(NewCasesRatePer100k ~ month + year, 
-                              family = neg_binomial_2, data = data, 
-                              prior = normal(0, 2.5), 
-                              prior_intercept = normal(0, 10),
-                              chains = 2, iter = 2000, seed = 123)
+
 
 
 
