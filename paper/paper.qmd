@@ -174,6 +174,35 @@ Discuss Graph
 
 
 
+```{r}
+ggplot(data, aes(x=GDPgrAbroad, y=trade_count)) +
+  geom_point(aes(color=factor(BANK)), alpha=0.6) +  # Color points by BANK status
+  labs(x = "Foreign GDP Growth Rate", y = "Trade Count", color = "Banking Crisis") +
+  theme_minimal() +
+  geom_smooth(method="lm", se=FALSE) 
+```
+
+```{r}
+ggplot(data, aes(x=factor(BANK), y=trade_count, fill=factor(BANK))) +
+  geom_bar(stat="summary", fun=mean, position=position_dodge(), width=0.7) +
+  labs(x = "Banking Crisis (0 = No, 1 = Yes)", y = "Average Trade Count", fill = "Banking Crisis") +
+  theme_minimal()
+```
+
+
+
+
+```{r}
+data_JPN_usa <- data %>%
+  filter(exporter %in% c("JPN", "USA", "ITA"))
+
+
+ggplot(data_JPN_usa, aes(x=factor(BANK), y=trade_count, fill=exporter)) +
+  geom_bar(stat="summary", fun=mean, position=position_dodge(), width=0.7) +
+  labs(x = "Banking Crisis (0 = No, 1 = Yes)", y = "Average Trade Count", title = "Banking Crisis Impact on Trade") +
+  scale_fill_manual(values=c("JPN"="blue", "USA"="red", "ITA"="green")) +
+  theme_minimal()
+```
 
 
 
@@ -182,11 +211,33 @@ Discuss Graph
 
 
 
+```{r}
+#| message: false
+#| echo: false
+#| warning: false
+#| fig-pos: 'h'
+#| label: tbl-model_summary
+#| tbl-cap: Model Summary for Poisson and Negative Binomial Models
 
+# Load the saved models
+stan_poisson_model <- readRDS("/cloud/project/models/first_model.rds")
 
+stan_nb_model <- readRDS("/cloud/project/models/second_model.rds")
 
+# Generate model summaries
+model_summary_poisson <- summary(stan_poisson_model)
+model_summary_nb <- summary(stan_nb_model)
 
+# Combine summaries into a table
+model_summary_table <- rbind(
+  "Poisson Model" = coef(model_summary_poisson),
+  "Negative Binomial Model" = coef(model_summary_nb)
+)
 
+# Print the table
+print(model_summary_table)
+
+```
 
 # Discussion
 
