@@ -57,10 +57,20 @@ data <-
 # Introduction {#sec-intro}
 
 
+Data used in this paper was cleaned, processed, modeled and tested with the programming language R [@citeR]. Also with support of additional packages in R: `tidyverse` [@citeTidyverse], `ggplot2` [@citeGgplot], `janitor` [@citeJanitor], `readr` [@citeReadr], `knitr` [@citeKnitr], `modelsummary` [@citeModelsummary], `testthat` [@citeTestthat], `KableExtra` [@citeKableEx], `viridis` [@citeViridis], `lubridate` [@citeLubridate].
 
 
 # Data {#sec-data}
 
+
+## Data Source
+
+The purpose of this research is to use the data drawing from the World Bank World Development Indicators (WDI) database. The functions of this set of information is to systematize the data on global development which comes from reliable official sources of international organizations and received on a yearly basis. It provides researchers with statics on economic indicators which are comparable and standardize across different states and regions. The dataset is provided for a period between 1980-2006, with a broad spectrum of information for major countries around the world, thus enabling an in-depth global economic trends analysis with a purpose to evaluate its impact on export growth performance. 
+
+
+## Data Variables and Measurement
+
+The dataset is considered to be an essential quality as it emphasizes the main variables that are needed to assess the impact of economic indicators on export growth.Key variables include:
 
 ```{r}
 #| message: false
@@ -70,16 +80,112 @@ data <-
 #| label: tbl-raw_data
 #| tbl-cap: Raw Data Preview
 
-kable(head(data))
+kable(head(data)[, c(1, 2, 3, 13, 12, 9, 5, 3, 7)])
+
+```
+Based on @tbl-raw_data
+
+- GDPgr: The trend of the annual GDP growth rate that is expressed in percentage terms. Constant settings compile the annual percentages reflected in the country's economic outputs.
+
+- GDPgrAbroad: GDP growth rate major trade partners, the contribution to the trade share presented as a continuous variable. It shows world economic circumstances that can effect a country production volumes and sales.
+
+- expgrowth: Positive difference in export growth rate that is represented as a logarithmic variable from one year to another countinuously. It is the instrument for computation of the annual growth percentages in export volumes comparing with the same period of previous year.
+
+- BANK: Binary variable which is equal to 1 in the case of a banking crisis occurrence and to 0 in the case otherwise. This variable will be used to distinguish periods of significant financial disruptions.
+
+- trade_value: The amount of trade, in thousands of USD, that is used to find the variable for the modeling after the entire value of exports is calculated.
+
+## Data Cleaning
+
+At the beginning, the dataset consisted of 45 variables with a lot of missing data and were found to be superfluous to the study's points. The variables that are judged to be such when more than 30% of the data is missing like 'ofagdp' and 'policytot' are excluded to maintain the integrity of data. The rest of the critical variables having missing values were imputed with the median for the case of continuous variables and, in the case of variables having category one used the mode in order to keep the typical data distribution. Moreover, data transformations were effected where and when needed; for instance, variables such as export values('tradevalue') were converted into count_trade in a way that the data was rounded to the nearest thousand in order to allow us to model and interpret the data easily. 
+
+## Alternative Datasets
+
+Although other data sources from agencies like the International Monetary Fund IMF and trade organizations were a potential, they could not be used for the following reasons. An evidence, the IMF figures, exposing ambiguity in the trade quantification and covering fewer years with sufficient uniformity in their format was another one. For this study, the most comprehensive and consist data from the World Bank data set was used for economical indicators and years which makes it a perfect match to the endeavor of a global economic effects on export growth.
+
+```{r}
+
+
+
+
+
+
 ```
 
 
 # Model {#sec-model}
 
-Data used in this paper was cleaned, processed, modeled and tested with the programming language R [@citeR]. Also with support of additional packages in R: `tidyverse` [@citeTidyverse], `ggplot2` [@citeGgplot], `janitor` [@citeJanitor], `readr` [@citeReadr], `knitr` [@citeKnitr], `modelsummary` [@citeModelsummary], `testthat` [@citeTestthat], `KableExtra` [@citeKableEx], `viridis` [@citeViridis], `lubridate` [@citeLubridate].
 
+## Determining Model
+
+In our analysis we tried to look at the interdependence of growth in domestic and international economy along with financial stability on the exchange values of the countries. We employed two count data models: the Poisson regression model or the Negative Binomial regression model, which would deal with the transformation of trade value data appropriately. Trade values, often a continuous set and measured in thousands of dollars, were converted to categorical data by rounding them to the nearest thousand.
+
+
+## Poisson Regression Model:
+
+The initial model applied was a Poisson regression, assuming the mean and variance of the transformed trade count to be equal. The Poisson model was specified as follows:
+
+$$
+\log(\lambda_i) = \beta_0 + \beta_1 \cdot \text{GDPgr}_i + \beta_2 \cdot \text{GDPgrAbroad}_i + \beta_3 \cdot \text{BANK}_i
+$$
+
+Where:
+
+- $\lambda_i$ is the expected count of the transformed trade value for the $i$th observation.
+- $\text{GDPgr}_i$ and $\text{GDPgrAbroad}_i$ are the domestic and foreign GDP growth rates, respectively.
+- $\text{BANK}_i$ is the binary indicator of a banking crisis.
+- $\beta_0$, $\beta_1$, $\beta_2$, and $\beta_3$ are the coefficients to be estimated.
+
+## Negative Binomial Regression Model
+
+Given evidence of dispersion from the Poisson model, a Negative Binomial model was subsequently employed. This model relaxes the equal mean-variance assumption by introducing a dispersion parameter. The Negative Binomial model was specified as:
+
+$$
+\log(\lambda_i) = \beta_0 + \beta_1 \cdot \text{GDPgr}_i + \beta_2 \cdot \text{GDPgrAbroad}_i + \beta_3 \cdot \text{BANK}_i
+$$
+
+$$
+\text{Var}(\lambda_i) = \mu_i + \theta / \mu_i^2
+$$
+
+where:
+
+- $\mu_i$ represents the mean of the transformed trade value for the $i$th observation.
+- $\theta$ is the reciprocal dispersion parameter, adjusting the variance beyond the mean.
+- $\text{Var}(\lambda_i)$ denotes the variance of the trade count, which is model-dependent.
 
 # Results
+
+This part of the report presents the results of two statistical models, which are the Poisson and Negative Binomial regression, calculated through the ln(trade value) data. The aim was to determine how the growth rates of the internal and external economies and the banking crises influence trade activities across different countries. Trade values, usually of continuous type and measured in thousands of dollars, were turned into count-like data by rounding to the nearest thousand in order to make the application of count data models more accessible. The preliminary investigation revealed trade values distribution with potential over dispersion, hence the Negative Binomial and Poisson regression methodology were contemplated as mention in under Data section.
+
+
+From Table we can see from poisson model the constant intercept 6.6, suggesting a baseline expected trade count of all predictors are zero. while GDPgr indicates a decrease in trade count by a multiplicative factor for each unit increase in domestic GDP growth.The GDPgrAbroad showing an increase in trade count by a factor of each unit increase in foreign GDP growth. however bank, reflecting a significant decrease in trade count by a factor of 0.45 during banking crises. Diagnosis which was done came out with reasonable convergence (Rhat = 1.0) but subtly suggested overdispersion since the observed variance seemed higher than expected under a Poisson process.
+
+
+
+Through the results of negative binomial regression, we arrive at the crucial implications that are related to, related to, the economic factors and banking crises and what is the impact of them on the aggregate trade volume. 
+Firstly, the domestic GPD growth coefficient (GDPgr) is estimated to be -0.2, and it is meant to be the favorably negative relation between the development of local economy and trade count. On the contrary, the value of the coefficient account for the variation of foreign GDP growth rate(GDPgrAbroad) of 0.4, which is implying that an increase in foreign economic growth has a positive impact on the domestic trade. Unlikewise, the coefficient, for the banking crisis indicator (BANK), which is of -0.7, is the greatest negative effect among banking crises where goods and services transactions drop in very many activities because of the uncertainty that the economic crisis comes with. In addition, the path coefficient reveals somewhat of an ambiguous relationship between the country's exposure to trade and carbon dioxide emissions. The reciprocal standard error of 0.2 signifies the presence of overdispersion of trade counts and thus necessitates the Negative Binomial model to account for this. The above results show the influence of the economics on the dynamics of the trade and this complexity highlights the role of considering the external and internal environment of the trade.
+
+While these two models had certain similarities, the Negative Binomial model was more appropriate, owing to its capacity to account for the extra-Poisson variation observed in the experimental data. The Negative Binomial model produced parameter estimates that were not only statistically relevant, but also helped make sense of economic situations: especially, how foreign trade was inversely proportional to domestic economic growth.
+
+
+
+Discuss Graph
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Discussion

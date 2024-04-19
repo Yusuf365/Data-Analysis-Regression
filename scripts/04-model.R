@@ -26,10 +26,34 @@ library(knitr)
 
 data <- read_csv("data/analysis_data/analysis_data.csv")
 
+stan_poisson_model <- stan_glm(trade_count ~ GDPgr + GDPgrAbroad + BANK, 
+                               family = poisson(link = "log"), 
+                               data = data_clean, 
+                               chains = 4, 
+                               iter = 2000,
+                               seed = 12345)
+
+# Summarize the results
+summary(stan_poisson_model)
+
+coef(stan_poisson_model)
+
+prior_summary(stan_poisson_model)
+
+stan_nb_model <- stan_glm(trade_count ~ GDPgr + GDPgrAbroad + BANK, 
+                          family = neg_binomial_2(link = "log"), 
+                          data = data_clean, 
+                          chains = 4, 
+                          iter = 2000,
+                          seed = 12345)
+
+# Summarize the results
+summary(stan_nb_model)
 
 
+coef(stan_nb_model)
 
-
+prior_summary(stan_nb_model)
 
 
 
@@ -44,8 +68,13 @@ data <- read_csv("data/analysis_data/analysis_data.csv")
 
 #### Save model ####
 saveRDS(
-  first_model,
+  stan_poisson_model,
   file = "models/first_model.rds"
 )
 
+
+saveRDS(
+  stan_nb_model,
+  file = "models/second_model.rds"
+)
 
