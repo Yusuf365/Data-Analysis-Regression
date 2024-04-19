@@ -4,7 +4,7 @@ author: "Mohammed Yusuf Shaikh"
 thanks: "Code and data are available at: https://github.com/Yusuf365/Data-Analysis-Regression.git"
 date: today
 date-format: long
-abstract: ""
+abstract: "The understanding of interdependencies between trade volumes, economic growth, and monetary stability is a prerequisite for constructive economic policy-making and planning of business strategies. The paper analyzes the effect of the domestic and the foreign GDP growth rates as well as banking crises on volume of trade. This analysis uses Bayesian statistical methods such as Poisson and Negative Binomial regression models to process trade count data to unravel the dynamic interaction of these economic variables"
 format: pdf
 number-sections: true
 bibliography: references.bib
@@ -56,8 +56,15 @@ data <-
 
 # Introduction {#sec-intro}
 
+When it comes to a global economy & its highly interconnected nature, understanding the complexities of international trade patterns becomes an extremely relevant subject for economic planning and policy-making. Amongst the multitude of factors that determine the volumes and direction of international trade, such as domestic or international economic conditions, financial stability, and geopolitical events, the last one affects them the most. As for the key role of GDP growth rate and bank stability, they are a great detector of the health of trade activities. Therefore, our primary goal in this study will be to dove into connections between trade counts and domestic and foreign GDP growth as well as the occurrence of banking crises. The study aims to measure the contribution of these economic indicators to trade activities through quantification which will in turn unveil the driving force mechanisms behind the links. The models introduced in an advanced statistical approach, such as Poisson and Negative Binomial regression provide the research with empirical insights that can guide decision making by policymakers, economists, and business leaders alike.
 
-Data used in this paper was cleaned, processed, modeled and tested with the programming language R [@citeR]. Also with support of additional packages in R: `tidyverse` [@citeTidyverse], `ggplot2` [@citeGgplot], `janitor` [@citeJanitor], `readr` [@citeReadr], `knitr` [@citeKnitr], `modelsummary` [@citeModelsummary], `testthat` [@citeTestthat], `KableExtra` [@citeKableEx], `viridis` [@citeViridis], `lubridate` [@citeLubridate].
+The paper is based on Bayesian statistical methodology, so we can broaden opportunities for the investigation of trade data. Through the use of the Poisson and Negative Binomial regression models, which have been selected specifically to handle count data, while also correcting for potential overdispersion, the analysis build up a solid framework for statistical inference. The Poisson model functions as the fundamental analytical tool at medium level accuracy. Yet, the Negative Binomial model is necessary for better understanding the outputs, particularly greatly deviated observations from Poisson model alone. This significance, however, also lies in providing innovative information to the discipline of economics, for instance, on the topics of international trade along with public policy. By exploring the nexus of economic growth, financial stability, and trade, the study intends to support the design of policies that can stimulate sustainable economic growth and create resiliency to economic turbulences. Furthermore, the research methodology offered a toolkit for future studies on related theoretical settings with increased research intensity taking into account these specific scenarios. This research study seeks to unveil key economic drivers that shape international trade by comprehensively diving into the particular economic factors influencing commerce. This exploration is intended to give the stakeholders a broadened perspective of the complexities of global trade and economic planning.
+
+
+Data used in this paper is from World bank Open Data[@iacovone_zavacka_2006] was cleaned, processed, modeled and tested with the programming language R [@citeR]. Also with support of additional packages in R: `tidyverse` [@citeTidyverse], `ggplot2` [@rGgplot2], `janitor` [@rJanitor], `readr` [@rReadr], `knitr` [@rKnitr], `modelsummary` [@citeModelsummary], `testthat` [@rstanarm], `KableExtra` [@citeKableEx], `viridis` [@broom], `lubridate` [@stargazer], [@MASS].
+
+
+The Introduction is followed by Data section, Model and Result and further it end with discussion & conclusion
 
 
 # Data {#sec-data}
@@ -103,14 +110,6 @@ At the beginning, the dataset consisted of 45 variables with a lot of missing da
 
 Although other data sources from agencies like the International Monetary Fund IMF and trade organizations were a potential, they could not be used for the following reasons. An evidence, the IMF figures, exposing ambiguity in the trade quantification and covering fewer years with sufficient uniformity in their format was another one. For this study, the most comprehensive and consist data from the World Bank data set was used for economical indicators and years which makes it a perfect match to the endeavor of a global economic effects on export growth.
 
-```{r}
-
-
-
-
-
-
-```
 
 
 # Model {#sec-model}
@@ -162,51 +161,35 @@ This part of the report presents the results of two statistical models, which ar
 From Table we can see from poisson model the constant intercept 6.6, suggesting a baseline expected trade count of all predictors are zero. while GDPgr indicates a decrease in trade count by a multiplicative factor for each unit increase in domestic GDP growth.The GDPgrAbroad showing an increase in trade count by a factor of each unit increase in foreign GDP growth. however bank, reflecting a significant decrease in trade count by a factor of 0.45 during banking crises. Diagnosis which was done came out with reasonable convergence (Rhat = 1.0) but subtly suggested overdispersion since the observed variance seemed higher than expected under a Poisson process.
 
 
-
 Through the results of negative binomial regression, we arrive at the crucial implications that are related to, related to, the economic factors and banking crises and what is the impact of them on the aggregate trade volume. 
 Firstly, the domestic GPD growth coefficient (GDPgr) is estimated to be -0.2, and it is meant to be the favorably negative relation between the development of local economy and trade count. On the contrary, the value of the coefficient account for the variation of foreign GDP growth rate(GDPgrAbroad) of 0.4, which is implying that an increase in foreign economic growth has a positive impact on the domestic trade. Unlikewise, the coefficient, for the banking crisis indicator (BANK), which is of -0.7, is the greatest negative effect among banking crises where goods and services transactions drop in very many activities because of the uncertainty that the economic crisis comes with. In addition, the path coefficient reveals somewhat of an ambiguous relationship between the country's exposure to trade and carbon dioxide emissions. The reciprocal standard error of 0.2 signifies the presence of overdispersion of trade counts and thus necessitates the Negative Binomial model to account for this. The above results show the influence of the economics on the dynamics of the trade and this complexity highlights the role of considering the external and internal environment of the trade.
 
 While these two models had certain similarities, the Negative Binomial model was more appropriate, owing to its capacity to account for the extra-Poisson variation observed in the experimental data. The Negative Binomial model produced parameter estimates that were not only statistically relevant, but also helped make sense of economic situations: especially, how foreign trade was inversely proportional to domestic economic growth.
 
 
-
-Discuss Graph
-
-
-
 ```{r}
-ggplot(data, aes(x=GDPgrAbroad, y=trade_count)) +
-  geom_point(aes(color=factor(BANK)), alpha=0.6) +  # Color points by BANK status
-  labs(x = "Foreign GDP Growth Rate", y = "Trade Count", color = "Banking Crisis") +
+#| message: false
+#| echo: false
+#| warning: false
+#| fig-pos: 'h'
+#| label: fig-GdpAbroad
+#| fig-cap: "The scatter plot displays the relationship between Foreign GDP Growth Rate and Trade Count with points colored by Banking Crisis status, including a 'Missing' category for previously unspecified data."
+
+# Convert the 0.044... value to a factor level indicating missing data
+data$BANK_factor <- as.factor(ifelse(data$BANK == 0.0441995947315096, "Missing", as.character(data$BANK)))
+
+# Now, recreate the plot with the modified factor levels
+ggplot(data, aes(x=GDPgrAbroad, y=trade_count, color=BANK_factor)) +
+  geom_point(alpha=0.6) +
+  labs(x = "Foreign GDP Growth Rate", y = "Trade Count", color = "Banking Crisis Status") +
   theme_minimal() +
-  geom_smooth(method="lm", se=FALSE) 
+  geom_smooth(method="lm", se=FALSE, aes(group=1))  # Including only non-missing data in the regression line
+
 ```
 
-```{r}
-ggplot(data, aes(x=factor(BANK), y=trade_count, fill=factor(BANK))) +
-  geom_bar(stat="summary", fun=mean, position=position_dodge(), width=0.7) +
-  labs(x = "Banking Crisis (0 = No, 1 = Yes)", y = "Average Trade Count", fill = "Banking Crisis") +
-  theme_minimal()
-```
+@fig-GdpAbroad presents a chart (scatter plot) showing growth rate of GDP and trade count with a few dimensions added that look at the impact of banking crises on trade. This graph plays an integral role in being able to understand the cause and effect relation between global economic conditions and trade volumes which can also distinguish between periods of economic stability and instability.
 
-
-
-
-```{r}
-data_JPN_usa <- data %>%
-  filter(exporter %in% c("JPN", "USA", "ITA"))
-
-
-ggplot(data_JPN_usa, aes(x=factor(BANK), y=trade_count, fill=exporter)) +
-  geom_bar(stat="summary", fun=mean, position=position_dodge(), width=0.7) +
-  labs(x = "Banking Crisis (0 = No, 1 = Yes)", y = "Average Trade Count", title = "Banking Crisis Impact on Trade") +
-  scale_fill_manual(values=c("JPN"="blue", "USA"="red", "ITA"="green")) +
-  theme_minimal()
-```
-
-
-
-
+The data exhibit a distinct upward shift with larger foreign GDP growth matching the increase in trade figures. This known relationship comes within the line of economic theory that claims that countries that have growing economies are most likely to import more and in this case their trade partners who share the same market benefit from their exports. Shaded colors on the graph show whether banking crisis was in progress, supplying a stark visual representation of the period outside the chaos. The analysis manifests that during banking crisis trade volumes are driven down, the same as it occurs irrespective of the progress of GDP rates abroad. It means a great deal for the stability of banking to be able to maintain the free trade system. The plot becomes more accurate and true to the field by including a linear regression line that is drawn after excluding the data points that were misbranded as banking crisis which are the data points of missing data. The strategy is centered on the typical relationship between GDP growth and openness to trade but embraces the challenge of trade anomalies in crisis reporting.
 
 
 
@@ -216,35 +199,47 @@ ggplot(data_JPN_usa, aes(x=factor(BANK), y=trade_count, fill=exporter)) +
 #| echo: false
 #| warning: false
 #| fig-pos: 'h'
-#| label: tbl-model_summary
-#| tbl-cap: Model Summary for Poisson and Negative Binomial Models
+#| label: fig-cross-country
+#| fig-cap: "Exporter  & Trade value"
 
-# Load the saved models
-stan_poisson_model <- readRDS("/cloud/project/models/first_model.rds")
+data_JPN_usa <- data %>%
+  filter(exporter %in% c("JPN", "USA", "ITA"))
 
-stan_nb_model <- readRDS("/cloud/project/models/second_model.rds")
-
-# Generate model summaries
-model_summary_poisson <- summary(stan_poisson_model)
-model_summary_nb <- summary(stan_nb_model)
-
-# Combine summaries into a table
-model_summary_table <- rbind(
-  "Poisson Model" = coef(model_summary_poisson),
-  "Negative Binomial Model" = coef(model_summary_nb)
-)
-
-# Print the table
-print(model_summary_table)
-
+ggplot(data_JPN_usa, aes(x=factor(BANK), y=trade_count, fill=exporter)) +
+  geom_bar(stat="summary", fun=mean, position=position_dodge(), width=0.7) +
+  labs(x = "Banking Crisis (0 = No, 1 = Yes)", y = "Average Trade Count", title = "Banking Crisis Impact on Trade") +
+  scale_fill_manual(values=c("JPN"="blue", "USA"="red", "ITA"="green")) +
+  theme_minimal()
 ```
+@fig-cross-country analyzes how trade volumes become affected in Japan, USA and Italy due to the financial crises, giving an insightful amendment of trade resilience in the global domestic arena. By means of the bar chart mapping the trade averages during and after banking crises of different countries, such graphic provides a comparison of the economic behavior under distress of a financial condition. This chart shows how banking crises exert unequal trade pressures upon countries. Japan and Italy appear to have a very low degree of stability with respect to their trade during banking crises, revealing a high degree of stress from the disruptions in domestic money market. Contrarily, it is the United States that has a fairly stable trade volume. This demonstrates may be that the US economy is structurally more resilient in the face of crises, or that the US authorities can do the job of managing them better than in the other countries. The range evidenced on the diagram informs about that differentiated economic and trade regulations are needed, but rather harmonised ones with a time lag. Proper understanding the dynamics of competed in terms of trade in crises may aid policymakers design better tools for cushion the negative effects on trade to give room for economic stability and recovery.
+
 
 # Discussion
 
+Through using Bayesian estimation models (with Poisson and negative binomial regression), the statistical analysis has made it possible to obtain key information regarding the trade volume and growth of domestic and overseas GDP (other things being equal) and the relationship between trade activity and banking crises. Research results focus on complex trading relationship underpins the critical role economic and financial stability plays in determining trade volumes as volatility of domestic and external economic growths impacts trade volumes differently.
 
+Domestic GDP Growth (GDPgr) inndeed, both the models showed to be a consistent disposition of an inverse correlation between the domestic GDP growth and the trade counts. This interesting result might be an indication on the expansion of the domestic economies, which intern could lead towards the focus on internal markets or possible that data demonstrates the epochs of import substitution where production on internal markets is reducing foreign (import) dependence affecting the global trade destabilization.
+
+Foreign GDP Growth (GDPgrAbroad) is the inverse, however, was true when it came to a foreign nation’s GDP growth and trade counts. In line with the traditional belief that the countries with growing economies increase the imports, which consequently augment the partner nation’s trade volumes, this was in full compliance with the conventional wisdom about the relationship between the GDP growth of the foreign nation and trading statistics. This association was apparent even more in the Negative Binomial model involving foreign economic conditions that provide greater sensitivity of our model to these variations.
+
+Banking Crises are the results of the crisis which occurred in the past, of which it can be clearly seen through the two models, pointed to a consistent negative impact on trade numbers, implying the pivotal part financial stability played in furthering international trade. Trading activities are most probably inhibited due to the fact that credit crises tend to confine the availability of key financial resources for imports and exports, reduce the confidence on financial deals, and make trade financing costly.
+
+The Negative Binomial model was the best match in the study of the dispersion of counts as regards to the trade, consequently the model serves as the preferred one for this type of analysis approach. The potential ability of this model to more accurately reflect individual data variation points to a much more reliable and established foundation for economic linkages.
+The insights from this analysis are valuable for policymakers and business leaders:The insights from this analysis are valuable for policymakers and business leaders, the knowledge about what precise the negative impact on domestic GDP growth for trade means calls for or what policies that strikes the balance between keeping both the domestic and external trade systems robust. Policies can be created to achieve economy diversification, thus avoid a situation of being only depended on your local economic market.
+
+The banking crises have mattered a lot to trade posing challenges to financial oversight. Thus, it is essential to design financial supervision and crisis mechanisms. Creating or strengthening the robust financial institutions and mechanism is a way to minimize a possible negative impact on trade that can occur in such a case. One of the largest reasons for trade volumes in economic area to grow is the status of economies live in. As a result, countries can gain from the development of trade relations with economies that are growing very well. This could be compensated by, for example, negotiating more favorable terms of trade, reducing trade barriers, or improving logistic and infrastructural support for international trade.While this study is a significant contribution to our understanding of the voters decision, there are certain limitations that should be addressed in the subsequent research. Even though the models have shown that they have taken us a long way to solve this issue, they are however not perfect as they are based on assumptions whereby the Poisson and the Negative Binomial count distributions are used to construct the models. The next step could see research developing models that incorporate more variables, such as the exchange rate, interest rate and global economic trends. As well, deeper below-surface studies of sector-wise trade data can help in further revealing of insights that are not obvious which is related to reaction of specific sectors to economic or financial fluctuations.
 
 # Conclusion
 
+The research process scrutinized in details the correlation between the increases in domestic and foreign GDP levels, bank crises and the trade volume in order to achieve this aim. The experimentation of advanced Bayesian statistical methods in conjunction with Poisson and Negative Binomial regression models provided us with a glimpse into how those basic economic indicators - very much interconnected - impact global trade.
+
+As it turned out, domestic GDP growth was negatively correlated with investment in and exports of goods and services; that is, as countries grew giving rise to a probable reduction trade flows, the trend was for them to turn inward and/or substitute imports with domestic deliveries. It has obvious ramifications for trade policies and economic strategy, as it may signal a titanic move in trading focus during a frenetic domestic increase of economy that can impede the process of international trade.
+
+The research has also strengthened the common view which suggests the economic growth in one nation may in turn inspire the increase of export for its trading partners due to the fact that the needs for their products might expand in the time of expansion. This positive correlation puts a strong emphasis on the importance of preserving well working economic relations with emerging economies as well as a need to use as many potentials of international expansion as possible for the domestic economy strength.
+
+The research further revealed how banking crises affected the volumes of trading, therefore it brings out how financial stability is essential in any kind of trading. Business in trade during banking crises is usually cut off to a significant extent, which may last much longer consequently affecting the economic welfare of those states where trade is a significant component of their economies. It underlines a significance of strong financial systems that make possible to defend against the negative impact of financial uncertainties.
+
+The implications of these findings are broad and significant, particularly for policymakers, economic strategists, and business leaders engaged in international trade:The implications of these findings are broad and significant, particularly for policymakers, economic strategists, and business leaders engaged in international trade:
 
 
 # References
