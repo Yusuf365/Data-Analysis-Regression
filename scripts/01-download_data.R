@@ -5,33 +5,30 @@
 # Contact: mohammedyusuf.shaikh@mail.utoronto.ca
 # License: MIT
 # Pre-requisites: Install Packages
-
+# Download .dta data file from link: https://www.openicpsr.org/openicpsr/project/114179/version/V1/view?path=/openicpsr/114179/fcr:versions/V1/Data.dta&type=file
 
 
 #### Workspace setup ####
 install.packages("readr")
 install.packages("tidyverse")
 install.packages("janitor")
+install.packages("haven")
 library(readr)
 library(tidyverse)
 library(janitor)
+library(haven)
 
 
-#### Download data ####
 
-url <- "https://data.leicester.gov.uk/api/explore/v2.1/catalog/datasets/covid-19-positive-tests-and-rate-per-100000-population-for-leicester-and-englan0/exports/csv"
+# Downlaod Data.dta using haven readable dta file in R
 
-# Read the CSV file using read_csv from the readr package
-the_raw_datacovid_19_positive_tests_and_rate_per_100000_population_for_leicester_and_england <- read_csv(url)
+raw_data <- read.csv("/cloud/project/finaldataset_1.csv")
 
-# Print the first few lines of the data frame to check
-head(the_raw_datacovid_19_positive_tests_and_rate_per_100000_population_for_leicester_and_england)
-
-
+head(raw_data)
 
 
 #### Save data ####
-# change the_raw_data to whatever name you assigned when you downloaded it.
-write_csv(the_raw_datacovid_19_positive_tests_and_rate_per_100000_population_for_leicester_and_england, "data/raw_data/raw_data.csv") 
+
+write.csv(raw_data, "data/raw_data/raw_data.csv")
 
          

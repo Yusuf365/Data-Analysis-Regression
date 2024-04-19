@@ -13,6 +13,7 @@ install.packages("readr")
 install.packages("dplyr")
 install.packages("janitor")
 install.packages("lubridate")
+install.packages("mice")
 library(tidyverse)
 library(readr)
 library(dplyr)
@@ -21,37 +22,21 @@ library(janitor)
 #### Clean data ####
 
 # Reading the data with specified delimiter using read_delim separate columns
-raw_data <- read_delim("data/raw_data/raw_data.csv", delim = ";")
+raw_data <- read.csv("/cloud/project/data/raw_data/raw_data.csv")
 
 # Checking the first few rows to ensure it read correctly
 head(raw_data)
 
+# Variable Name
+names(raw_data)
 
-clean_data <- raw_data |>
-  rename(
-    AreaName = areaname,
-    Date = date,
-    NewCasesBySpecimenDate = newcasesbyspecimendate,
-    NewCasesRatePer100k = newcasesbyspecimendaterollingrate,
-    NewCasesRollingSum = newcasesbyspecimendaterollingsum
-  )
+data_clean <- raw_data |>
+  dplyr::select(-X,-ofagdp, -policytot, -debtrelief, -recaps, -tradeshare, -durables, -loss, -loss2, -INVSA, -CCC, - RZyoung, -n, -href, -contcrisis, -tradeshare, -expgrowthTRIM, -BANK_W3, -forbb, -forba, -liqsup, -blanguar, -homogeneity, -FL, -TANG,-pcrdbofgdp, -rznoncrisis)
 
-head(clean_data)
-names(clean_data)
-head(clean_data$Date)
-
-clean_data <- na.omit(clean_data)
+view(data_clean)
+data_clean$trade_count <- round(data_clean$tradevalue / 1000)
 
 
-# Adding separate column for year, month, date
-
-clean_data <- clean_data |>
-  mutate(
-    year = year(Date),  # Extract the year from the date column
-    month = month(Date),
-    day = day(Date)     # Extract the day from the date column
-  )
-
-view(clean_data)
+names(data_clean)
 #### Save data ####
-write_csv(clean_data, "data/analysis_data/analysis_data.csv")
+write_csv(data_clean, "/cloud/project/data/analysis_data/analysis_data.csv")
