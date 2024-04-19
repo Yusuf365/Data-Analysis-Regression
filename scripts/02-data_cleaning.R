@@ -31,7 +31,17 @@ head(raw_data)
 names(raw_data)
 
 data_clean <- raw_data |>
-  dplyr::select(-X,-ofagdp, -policytot, -debtrelief, -recaps, -tradeshare, -durables, -loss, -loss2, -INVSA, -CCC, - RZyoung, -n, -href, -contcrisis, -tradeshare, -expgrowthTRIM, -BANK_W3, -forbb, -forba, -liqsup, -blanguar, -homogeneity, -FL, -TANG,-pcrdbofgdp, -rznoncrisis)
+  dplyr::select(-X, -ofagdp, -policytot, -debtrelief, -recaps, -tradeshare, 
+                -durables, -loss, -loss2, -INVSA, -CCC, -RZyoung, -n, 
+                -contcrisis, -tradeshare, -expgrowthTRIM, -BANK_W3, -forbb, 
+                -forba, -liqsup, -blanguar, -homogeneity, -FL, -TANG, 
+                -pcrdbofgdp, -rznoncrisis, -herf, -intout, -rd, -homogeneity, 
+                -developed, -developing, -RecessionAbroad, -caplab, -product)
+
+data_clean <- data_clean %>%
+  mutate(across(where(is.numeric), ~ifelse(is.na(.), mean(., na.rm = TRUE), .)))  # Impute numeric NAs with column mean
+
+
 
 view(data_clean)
 data_clean$trade_count <- round(data_clean$tradevalue / 1000)

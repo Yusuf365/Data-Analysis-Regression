@@ -1,5 +1,5 @@
 ---
-title: "Deciphering the Temporal Patterns of COVID-19: A Comprehensive Analysis of Case Rates in England"
+title: "How do domestic GDP growth, global economic conditions, and financial crises impact the export growth rate in different countries?"
 author: "Mohammed Yusuf Shaikh"
 thanks: "Code and data are available at: https://github.com/Yusuf365/Data-Analysis-Regression.git"
 date: today
@@ -70,7 +70,7 @@ data <-
 #| label: tbl-raw_data
 #| tbl-cap: Raw Data Preview
 
-kable(head(data)[, 2:24])
+kable(head(data))
 ```
 
 
